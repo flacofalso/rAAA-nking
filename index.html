@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>rAAA!nking</title>
+  <meta name="description" content="Calificando películas caga'o de miedo">
+  <meta name="theme-color" content="#0A1430">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%98%B1%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700&family=Big+Shoulders+Display:wght@800;900&family=Creepster&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="masthead">
+    <h1 class="logo" aria-label="rAAA!nking"><span aria-hidden="true">r</span><span class="logo-scream" aria-hidden="true">AAA!</span><span aria-hidden="true">nking</span></h1>
+    <p class="bajada">Calificando películas caga'o de miedo</p>
+  </header>
+
+  <main>
+    <!-- ============ INICIO ============ -->
+    <section id="home" class="view">
+
+      <div id="draftBanner" class="draft-banner" hidden>
+        <p>Tienes una calificación a medias: <strong id="draftTitle"></strong> <span id="draftDetail"></span></p>
+        <div class="draft-actions">
+          <button id="draftResume" type="button" class="btn-giallo">Seguir calificando</button>
+          <button id="draftDiscard" type="button" class="btn-ghost">Descartar</button>
+        </div>
+      </div>
+
+      <div id="keyPanel" class="key-panel" hidden>
+        <form id="keyForm">
+          <label for="keyInput" class="key-label">Conecta la app con TMDB</label>
+          <p>Las películas y afiches vienen de The Movie Database. La key es gratis: créala en
+            <a href="https://www.themoviedb.org/settings/api" target="_blank" rel="noopener">themoviedb.org/settings/api</a>
+            y pega aquí la <em>API Key</em> o el <em>API Read Access Token</em>. Queda guardada solo en este navegador.</p>
+          <div class="field-row">
+            <input id="keyInput" type="text" autocomplete="off" spellcheck="false" placeholder="Pega tu key de TMDB">
+            <button type="submit" class="btn-giallo">Guardar key</button>
+          </div>
+          <p id="keyMsg" class="form-msg" role="status"></p>
+        </form>
+      </div>
+
+      <form id="searchForm" class="search" role="search">
+        <label for="searchInput" class="search-label">¿qué vamos a ver?</label>
+        <div class="field-row">
+          <input id="searchInput" type="search" autocomplete="off" enterkeyhint="search"
+                 placeholder="Suspiria, El Exorcista, Terrifier…">
+          <button type="submit" class="btn-ink">Buscar</button>
+        </div>
+      </form>
+
+      <p id="searchStatus" class="search-status" role="status" aria-live="polite"></p>
+      <ul id="results" class="poster-grid" hidden></ul>
+
+      <section class="ranking" aria-labelledby="rankingTitle">
+        <div class="ranking-head">
+          <h2 id="rankingTitle">Mi ranking de sustos</h2>
+          <div class="ranking-tools">
+            <span id="rankingCount" class="ranking-count"></span>
+            <label for="sortSelect" class="visually-hidden">Ordenar ranking</label>
+            <select id="sortSelect">
+              <option value="fear">Más miedo primero</option>
+              <option value="recent">Vistas recientemente</option>
+            </select>
+          </div>
+        </div>
+        <ol id="ranking" class="poster-grid"></ol>
+        <p id="rankingEmpty" class="empty" hidden>Todavía no calificas ninguna. Busca arriba la de esta noche y, cuando termine, ponle nota.</p>
+      </section>
+    </section>
+
+    <!-- ============ CALIFICAR ============ -->
+    <section id="rate" class="view" hidden aria-labelledby="rateTitle">
+      <button id="backBtn" class="back" type="button">← Volver al inicio</button>
+
+      <article class="rate-grid">
+        <figure id="ratePoster" class="rate-poster"></figure>
+
+        <div class="rate-info">
+          <p class="eyebrow">Esta noche vemos</p>
+          <h2 id="rateTitle"></h2>
+          <p id="rateMeta" class="credits"></p>
+          <ul id="rateGenres" class="chips"></ul>
+        </div>
+
+        <div class="rate-controls">
+          <fieldset id="fearSet" class="fear unset">
+            <legend>Cuánto me asustó</legend>
+            <div id="fearFaces" class="fear-faces"></div>
+            <input id="fearRange" class="fear-range" type="range" min="1" max="5" step="1" value="3"
+                   aria-describedby="fearValue">
+            <div class="fear-ends">
+              <span class="end-low">estuvo piola</span>
+              <span class="end-high">todo caga'o. nunca más.</span>
+            </div>
+            <p id="fearValue" class="fear-value" aria-live="polite">Toca una cara o mueve la barra.</p>
+          </fieldset>
+
+          <div class="jumps">
+            <button id="jumpBtn" class="jump-btn" type="button">¿cuántos saltos me pegué?</button>
+            <div class="jump-meter">
+              <output id="jumpCount" class="jump-count" for="jumpBtn">0</output>
+              <span id="jumpUnit" class="jump-unit">saltos</span>
+              <button id="jumpUndo" class="jump-undo" type="button" disabled>Restar uno</button>
+            </div>
+          </div>
+
+          <div class="done-wrap">
+            <button id="doneBtn" class="done" type="button" disabled>¡Listo!</button>
+            <p id="doneHint" class="done-hint">Elige cuánto te asustó para guardar.</p>
+            <button id="deleteBtn" class="delete" type="button" hidden>Borrar esta calificación</button>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-tools">
+      <button id="keyToggle" type="button" class="btn-small">Configurar TMDB</button>
+      <button id="exportBtn" type="button" class="btn-small">Exportar calificaciones</button>
+      <label class="btn-small import">
+        <input id="importInput" type="file" accept="application/json,.json" class="visually-hidden">
+        Importar calificaciones
+      </label>
+    </div>
+    <p id="footerMsg" class="form-msg" role="status"></p>
+    <p class="attribution">Datos y afiches de <a href="https://www.themoviedb.org/" target="_blank" rel="noopener">TMDB</a>.
+      Esta app usa la API de TMDB, pero no está respaldada ni certificada por TMDB.</p>
+  </footer>
+</div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
